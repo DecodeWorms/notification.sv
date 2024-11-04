@@ -25,7 +25,7 @@ func (sm SmtpServer) Address() string {
 
 func (sm SmtpServer) SendEmail(to []string, message []byte) error {
 	c := config.ImportConfig(config.OSSource{})
-	smtpServer := SmtpServer{Host: "smtp.gmail.com", Port: constant.Port}
+	smtpServer := SmtpServer{Host: c.Host, Port: c.Port}
 	auth := smtp.PlainAuth("", constant.From, c.Password, sm.Host)
 	if err := smtp.SendMail(smtpServer.Address(), auth, constant.From, to, message); err != nil {
 		return err
