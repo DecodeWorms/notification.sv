@@ -9,12 +9,18 @@ import (
 	"syscall"
 
 	"github.com/DecodeWorms/notification.sv/config"
+	"github.com/DecodeWorms/notification.sv/handler"
 	"github.com/DecodeWorms/notification.sv/notify"
+	"github.com/DecodeWorms/pulsify/pulsar"
 	"github.com/gin-gonic/gin"
 )
 
-func SetUpSmtpServer(h, p string) notify.SmtpServer {
-	return notify.NewSmtServer(h, p)
+func SetUpSmtpServer(c config.Config) notify.SmtpServer {
+	return notify.NewSmtServer(c)
+}
+
+func SetUpSubscriber(sub *pulsar.PulsarClient, smtp notify.SmtpServer) handler.Subscriber {
+	return handler.NewSubscriber(sub, smtp)
 }
 
 func SetUpRouter() *gin.Engine {
@@ -22,7 +28,7 @@ func SetUpRouter() *gin.Engine {
 	return router
 }
 
-func StartServer(router *gin.Engine) {
+func StartServer(router *gin.Engine, sub handler.Subscriber) {
 	//var c config.Config
 	var c = config.ImportConfig(config.OSSource{})
 	interruptHandler := make(chan os.Signal, 1)
@@ -38,5 +44,8 @@ func StartServer(router *gin.Engine) {
 
 	<-interruptHandler
 	log.Println("Closing application...")
+
+	//Clean up resources
+	sub.Shutdown()
 
 }
