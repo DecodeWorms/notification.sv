@@ -14,7 +14,7 @@ const (
 	password    = "SMTP_PASSWORD"
 	pulsarUrl   = "PULSAR_URL"
 	host        = "SMTP_HOST"
-	port        = "SMTP_PORT"
+	smtpPort    = "SMTP_PORT"
 )
 
 type source interface {
@@ -63,7 +63,7 @@ type Config struct {
 	ServicePort string
 	PulsarUrl   string
 	Host        string
-	Port        string
+	SmtpPort    string
 }
 
 func ImportConfig(source source) Config {
@@ -73,18 +73,18 @@ func ImportConfig(source source) Config {
 	}
 
 	appEnv := source.GetEnv(appEnv, "")
-	port := source.GetEnv(servicePort, "8001")
+	servicePort := source.GetEnv(servicePort, "8001")
 	url := source.GetEnv(pulsarUrl, "")
 	pass := source.GetEnv(password, "")
 	host := source.GetEnv(host, "")
-	smtpPort := source.GetEnv(port, "")
+	smtpPort := source.GetEnv(smtpPort, "")
 
 	return Config{
 		AppEnv:      appEnv,
-		ServicePort: port,
+		ServicePort: servicePort,
 		PulsarUrl:   url,
 		Password:    pass,
 		Host:        host,
-		Port:        smtpPort,
+		SmtpPort:    smtpPort,
 	}
 }

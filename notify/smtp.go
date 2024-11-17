@@ -1,33 +1,41 @@
 package notify
 
 import (
+	"fmt"
+	"log"
 	"net/smtp"
+	"strings"
 
 	"github.com/DecodeWorms/notification.sv/config"
 	"github.com/DecodeWorms/notification.sv/constant"
 )
 
 type SmtpServer struct {
-	Host string
-	Port string
+	Host   string
+	Port   string
+	config config.Config
 }
 
-func NewSmtServer(h, p string) SmtpServer {
+func NewSmtServer(c config.Config) SmtpServer {
 	return SmtpServer{
-		Host: h,
-		Port: p,
+		Host:   c.Host,
+		Port:   c.SmtpPort,
+		config: c,
 	}
 }
 
 func (sm SmtpServer) Address() string {
-	return sm.Host + sm.Port
+	if sm.Host == "" || sm.Port == "" {
+		log.Println("SMTP Host or Port is missing")
+		return ""
+	}
+	return fmt.Sprintf("%s:%s", strings.TrimSpace(sm.Host), strings.TrimSpace(sm.Port))
+
 }
 
 func (sm SmtpServer) SendEmail(to []string, message []byte) error {
-	c := config.ImportConfig(config.OSSource{})
-	smtpServer := SmtpServer{Host: c.Host, Port: c.Port}
-	auth := smtp.PlainAuth("", constant.From, c.Password, sm.Host)
-	if err := smtp.SendMail(smtpServer.Address(), auth, constant.From, to, message); err != nil {
+	auth := smtp.PlainAuth("", constant.From, sm.config.Password, sm.Host)
+	if err := smtp.SendMail(sm.Address(), auth, constant.From, to, message); err != nil {
 		return err
 	}
 	return nil
