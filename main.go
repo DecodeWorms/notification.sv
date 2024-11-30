@@ -12,7 +12,10 @@ var c config.Config
 
 func main() {
 	c = config.ImportConfig(config.OSSource{})
-	smtp := serverutils.SetUpSmtpServer(c)
+	smtp, err := serverutils.SetUpSmtpServer(c)
+	if err != nil {
+		log.Printf("error setting up smtp server %v", err)
+	}
 	sub, err := pulsar.NewPulsarClient(c.PulsarUrl)
 	if err != nil {
 		log.Printf("error connecting to Pulsar client %v", err)
