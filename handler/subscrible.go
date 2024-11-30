@@ -13,13 +13,13 @@ import (
 
 type Subscriber struct {
 	sub  *pulsar.PulsarClient
-	smtp notify.SmtpServer
+	smtp *notify.SmtpServer
 }
 
 func NewSubscriber(sub *pulsar.PulsarClient, smtp notify.SmtpServer) Subscriber {
 	return Subscriber{
 		sub:  sub,
-		smtp: smtp,
+		smtp: &smtp,
 	}
 }
 

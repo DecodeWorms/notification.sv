@@ -15,12 +15,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetUpSmtpServer(c config.Config) notify.SmtpServer {
+func SetUpSmtpServer(c config.Config) (*notify.SmtpServer, error) {
 	return notify.NewSmtServer(c)
 }
 
-func SetUpSubscriber(sub *pulsar.PulsarClient, smtp notify.SmtpServer) handler.Subscriber {
-	return handler.NewSubscriber(sub, smtp)
+func SetUpSubscriber(sub *pulsar.PulsarClient, smtp *notify.SmtpServer) handler.Subscriber {
+	return handler.NewSubscriber(sub, *smtp)
 }
 
 func SetUpRouter() *gin.Engine {

@@ -4,6 +4,7 @@
         "joho",
         "pulsify",
         "serverutils",
+        "STARTTLS",
         "VERIFYEMAIL"
     ]
 }
