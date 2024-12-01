@@ -26,6 +26,7 @@ func main() {
 
 	//Call event listener
 	subscriber.SubscribeToVerifyEmail()
+	subscriber.SubscribeToWelcomeEmail()
 
 	router := serverutils.SetUpRouter()
 
