@@ -101,6 +101,85 @@ func (s Subscriber) SubscribeToWelcomeEmail() {
 	}()
 }
 
+func (s Subscriber) SubscribeToSendForgotPasswordCode() {
+	go func() {
+		for {
+			//Create event consumption
+			sub, err := s.sub.CreateConsumer(constant.FORGOTPASSWORD, constant.SUBSCRIPTION)
+			if err != nil {
+				log.Printf("error creating consumer %v", err)
+				continue
+			}
+			msg, err := sub.ReceiveMessage()
+			if err != nil {
+				log.Printf("error receiving message %v", err)
+				continue
+			}
+
+			//Convert the interface msg to string
+			result := msg.(string)
+
+			//Unmarshal the result into verify variable
+			var pass models.ForgotPassword
+			if err := json.Unmarshal([]byte(result), &pass); err != nil {
+				log.Printf("error un marshaling %v", err)
+				continue
+			}
+
+			//Send verify email to the customer
+			data := models.ForgotPassword{
+				Email: pass.Email,
+				Name:  pass.Name,
+				Code:  pass.Code,
+			}
+			if err := s.smtp.SendForgotPasswordCodeEmail(data); err != nil {
+				log.Printf("error sending forgot password code email %v", err)
+				continue
+			}
+		}
+
+	}()
+}
+
+func (s Subscriber) SubscribeToSuccessfulResetPassword() {
+	go func() {
+		for {
+			//Create event consumption
+			sub, err := s.sub.CreateConsumer(constant.RESETPASSWORD, constant.SUBSCRIPTION)
+			if err != nil {
+				log.Printf("error creating consumer %v", err)
+				continue
+			}
+			msg, err := sub.ReceiveMessage()
+			if err != nil {
+				log.Printf("error receiving message %v", err)
+				continue
+			}
+
+			//Convert the interface msg to string
+			result := msg.(string)
+
+			//Unmarshal the result into verify variable
+			var pass models.ForgotPassword
+			if err := json.Unmarshal([]byte(result), &pass); err != nil {
+				log.Printf("error un marshaling %v", err)
+				continue
+			}
+
+			//Send verify email to the customer
+			data := models.ForgotPassword{
+				Email: pass.Email,
+				Name:  pass.Name,
+			}
+			if err := s.smtp.SendSuccessfulResetPasswordEmail(data); err != nil {
+				log.Printf("error sending reset password email %v", err)
+				continue
+			}
+		}
+
+	}()
+}
+
 // Shutdown gracefully closes the Pulsar client
 func (s Subscriber) Shutdown() {
 	//Pulsar is shutting down

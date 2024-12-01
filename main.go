@@ -27,6 +27,8 @@ func main() {
 	//Call event listener
 	subscriber.SubscribeToVerifyEmail()
 	subscriber.SubscribeToWelcomeEmail()
+	subscriber.SubscribeToSendForgotPasswordCode()
+	subscriber.SubscribeToSuccessfulResetPassword()
 
 	router := serverutils.SetUpRouter()
 
