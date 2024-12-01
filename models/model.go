@@ -10,3 +10,9 @@ type WelcomeMessage struct {
 	Email   string
 	Message string
 }
+
+type ForgotPassword struct {
+	Name  string
+	Email string
+	Code  string
+}

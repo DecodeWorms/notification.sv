@@ -21,8 +21,30 @@ func (sm SmtpServer) SendWelcomeEmail(data models.WelcomeMessage) error {
 	to := []string{
 		data.Email,
 	}
-	data.Message = fmt.Sprintf("Welcome Mr/Mrs %s,  you have completed the kyc", data.Name)
+	data.Message = fmt.Sprintf("Welcome  %s,  you have completed the kyc", data.Name)
 	msg := data.Message
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sm SmtpServer) SendForgotPasswordCodeEmail(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Welcome %s, we received your password change request and here is your confirmation code %s", data.Name, data.Code)
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sm SmtpServer) SendSuccessfulResetPasswordEmail(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Hi %s, password reset was successful", data.Name)
 	if err := sm.SendEmail(to, []byte(msg)); err != nil {
 		return err
 	}
