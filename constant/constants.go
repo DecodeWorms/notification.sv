@@ -6,4 +6,5 @@ const (
 	Port         = "587"
 	VERIFYEMAIL  = "verify-email"
 	SUBSCRIPTION = "verify-email"
+	WELCOME      = "welcome-message"
 )
