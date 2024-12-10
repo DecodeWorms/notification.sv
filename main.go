@@ -29,6 +29,7 @@ func main() {
 	subscriber.SubscribeToWelcomeEmail()
 	subscriber.SubscribeToSendForgotPasswordCode()
 	subscriber.SubscribeToSuccessfulResetPassword()
+	subscriber.SubscribeToSuccessfulResetChangePassword()
 
 	router := serverutils.SetUpRouter()
 

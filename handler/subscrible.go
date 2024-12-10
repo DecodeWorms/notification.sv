@@ -16,10 +16,10 @@ type Subscriber struct {
 	smtp *notify.SmtpServer
 }
 
-func NewSubscriber(sub *pulsar.PulsarClient, smtp notify.SmtpServer) Subscriber {
+func NewSubscriber(sub *pulsar.PulsarClient, smtp *notify.SmtpServer) Subscriber {
 	return Subscriber{
 		sub:  sub,
-		smtp: &smtp,
+		smtp: smtp,
 	}
 }
 
@@ -172,6 +172,45 @@ func (s Subscriber) SubscribeToSuccessfulResetPassword() {
 				Name:  pass.Name,
 			}
 			if err := s.smtp.SendSuccessfulResetPasswordEmail(data); err != nil {
+				log.Printf("error sending reset password email %v", err)
+				continue
+			}
+		}
+
+	}()
+}
+
+func (s Subscriber) SubscribeToSuccessfulResetChangePassword() {
+	go func() {
+		for {
+			//Create event consumption
+			sub, err := s.sub.CreateConsumer(constant.SUCCESSCHANGEPASSWORD, constant.SUBSCRIPTION)
+			if err != nil {
+				log.Printf("error creating consumer %v", err)
+				continue
+			}
+			msg, err := sub.ReceiveMessage()
+			if err != nil {
+				log.Printf("error receiving message %v", err)
+				continue
+			}
+
+			//Convert the interface msg to string
+			result := msg.(string)
+
+			//Unmarshal the result into verify variable
+			var pass models.ForgotPassword
+			if err := json.Unmarshal([]byte(result), &pass); err != nil {
+				log.Printf("error un marshaling %v", err)
+				continue
+			}
+
+			//Send verify email to the customer
+			data := models.ForgotPassword{
+				Email: pass.Email,
+				Name:  pass.Name,
+			}
+			if err := s.smtp.SendSuccessfulResetPasswordChangeEmail(data); err != nil {
 				log.Printf("error sending reset password email %v", err)
 				continue
 			}

@@ -20,7 +20,7 @@ func SetUpSmtpServer(c config.Config) (*notify.SmtpServer, error) {
 }
 
 func SetUpSubscriber(sub *pulsar.PulsarClient, smtp *notify.SmtpServer) handler.Subscriber {
-	return handler.NewSubscriber(sub, *smtp)
+	return handler.NewSubscriber(sub, smtp)
 }
 
 func SetUpRouter() *gin.Engine {

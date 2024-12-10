@@ -50,3 +50,14 @@ func (sm SmtpServer) SendSuccessfulResetPasswordEmail(data models.ForgotPassword
 	}
 	return nil
 }
+
+func (sm SmtpServer) SendSuccessfulResetPasswordChangeEmail(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Hi %s, password change was successful", data.Name)
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
