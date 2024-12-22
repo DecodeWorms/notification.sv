@@ -6,6 +6,9 @@ import (
 	"github.com/DecodeWorms/notification.sv/models"
 )
 
+/*
+Emails to users are here ...
+*/
 func (sm SmtpServer) SendVerifyEmail(data models.VerifyEmail) error {
 	to := []string{
 		data.Email,
@@ -89,6 +92,21 @@ func (sm SmtpServer) SendSuccessfulMessageAidDeleted(data models.ForgotPassword)
 	}
 	msg := fmt.Sprintf("Hi %s, aid deletion was successful", data.Name)
 	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+Email to Companies are here
+*/
+
+func (sm SmtpServer) SendCompanyVerifyEmail(data models.VerifyEmail) error {
+	to := []string{
+		data.Email,
+	}
+	message := []byte(data.Code)
+	if err := sm.SendEmail(to, message); err != nil {
 		return err
 	}
 	return nil

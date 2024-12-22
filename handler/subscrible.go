@@ -23,6 +23,9 @@ func NewSubscriber(sub *pulsar.PulsarClient, smtp *notify.SmtpServer) Subscriber
 	}
 }
 
+/*
+Subscribe to users Produced records to pulser broker
+*/
 func (s Subscriber) SubscribeToVerifyEmail() {
 	go func() {
 		for {
@@ -329,6 +332,49 @@ func (s Subscriber) SubscribeToSuccessfulAidDeleted() {
 			}
 			if err := s.smtp.SendSuccessfulMessageAidDeleted(data); err != nil {
 				log.Printf("error sending reset password email %v", err)
+				continue
+			}
+		}
+
+	}()
+}
+
+/*
+Subscribe to companies Produced records to pulser broker
+*/
+
+func (s Subscriber) SubscribeToCompanyVerifyEmail() {
+	go func() {
+		for {
+			//Create event consumption
+			sub, err := s.sub.CreateConsumer(constant.VERIFYEMAIL, constant.SUBSCRIPTION)
+			if err != nil {
+				log.Printf("error creating consumer %v", err)
+				continue
+			}
+			msg, err := sub.ReceiveMessage()
+			if err != nil {
+				log.Printf("error receiving message %v", err)
+				continue
+			}
+
+			//Convert the interface msg to string
+			result := msg.(string)
+
+			//Unmarshal the result into verify variable
+			var verify models.VerifyEmail
+			if err := json.Unmarshal([]byte(result), &verify); err != nil {
+				log.Printf("error un marshaling %v", err)
+				continue
+			}
+
+			//Send verify email to the customer
+			data := models.VerifyEmail{
+				Email: verify.Email,
+				Code:  verify.Code,
+			}
+			if err := s.smtp.SendCompanyVerifyEmail(data); err != nil {
+				log.Printf("error sending verify email %v", err)
 				continue
 			}
 		}

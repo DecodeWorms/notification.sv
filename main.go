@@ -24,7 +24,7 @@ func main() {
 	//Initialize event listener
 	subscriber := serverutils.SetUpSubscriber(sub, smtp)
 
-	//Call event listener
+	//Call event listener for user
 	subscriber.SubscribeToVerifyEmail()
 	subscriber.SubscribeToWelcomeEmail()
 	subscriber.SubscribeToSendForgotPasswordCode()
@@ -33,6 +33,9 @@ func main() {
 	subscriber.SubscribeToSuccessfulAidCreation()
 	subscriber.SubscribeToSuccessfulAidUpdating()
 	subscriber.SubscribeToSuccessfulAidDeleted()
+
+	//Call event listener for company
+	subscriber.SubscribeToCompanyVerifyEmail()
 
 	router := serverutils.SetUpRouter()
 
