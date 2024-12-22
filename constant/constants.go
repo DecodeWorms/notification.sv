@@ -10,4 +10,7 @@ const (
 	FORGOTPASSWORD        = "forgot-password"
 	RESETPASSWORD         = "reset-password"
 	SUCCESSCHANGEPASSWORD = "success-password-change"
+	AIDCREATED            = "success-aid-created"
+	AIDUPDATED            = "aid-updated"
+	AIDDELETED            = "aid-deleted"
 )
