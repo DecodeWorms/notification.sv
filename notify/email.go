@@ -61,3 +61,35 @@ func (sm SmtpServer) SendSuccessfulResetPasswordChangeEmail(data models.ForgotPa
 	}
 	return nil
 }
+func (sm SmtpServer) SendSuccessfulMessageAidCreated(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Hi %s, aid creation was successful", data.Name)
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sm SmtpServer) SendSuccessfulMessageAidUpdated(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Hi %s, aid updating was successful", data.Name)
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sm SmtpServer) SendSuccessfulMessageAidDeleted(data models.ForgotPassword) error {
+	to := []string{
+		data.Email,
+	}
+	msg := fmt.Sprintf("Hi %s, aid deletion was successful", data.Name)
+	if err := sm.SendEmail(to, []byte(msg)); err != nil {
+		return err
+	}
+	return nil
+}

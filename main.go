@@ -30,6 +30,9 @@ func main() {
 	subscriber.SubscribeToSendForgotPasswordCode()
 	subscriber.SubscribeToSuccessfulResetPassword()
 	subscriber.SubscribeToSuccessfulResetChangePassword()
+	subscriber.SubscribeToSuccessfulAidCreation()
+	subscriber.SubscribeToSuccessfulAidUpdating()
+	subscriber.SubscribeToSuccessfulAidDeleted()
 
 	router := serverutils.SetUpRouter()
 
