@@ -23,6 +23,9 @@ func NewSubscriber(sub *pulsar.PulsarClient, smtp *notify.SmtpServer) Subscriber
 	}
 }
 
+/*
+Subscribe to users Produced records to pulser broker
+*/
 func (s Subscriber) SubscribeToVerifyEmail() {
 	go func() {
 		for {
