@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+    ports:
+      - "8002:8002"
+    networks:
+      - rescue-support.sv-network
+    container_name: notification.sv-container
+
+networks:
+  rescue-support.sv-network:
+
